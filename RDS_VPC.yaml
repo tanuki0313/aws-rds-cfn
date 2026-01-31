@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'RDS instance with Secrets Manager in a custom VPC'
+
+Parameters:
+  DBPublicAccess:
+    Type: String
+    AllowedValues: [true, false]
+    Default: false
+    Description: "Set to true only for testing purposes (allows connection from local PC)"
+
+  AllowedMyIP:
+    Type: String
+    Default: "0.0.0.0/32"
+    Description: "Target IP address allowed to connect to RDS for verification"
+
+  DBInstanceClass:
+    Type: String
+    Default: db.t4g.micro
+    AllowedValues:
+      - db.t4g.micro
+      - db.t3.micro
+      - db.t3.small
+    Description: "RDS instance class (modify based on environment)"
+
+Resources:
+  # 1. Generate and store password in Secrets Manager
+  MyRDSSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub "${AWS::StackName}-rds-secret"
+      Description: "RDS master password for custom VPC"
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "admin"}'
+        GenerateStringKey: "password"
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+
+  # 2. DB Subnet Group
+  MyDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: "Subnet group for custom VPC"
+      SubnetIds:
+         - subnet-0186b402ed412e224
+         - subnet-01b12080bdcba3b49
+
+  # 3. Security Group (Allow specific IP for verification)
+  MyDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allow MySQL access (verification only)"
+      VpcId: vpc-0f2459d7179a424e6
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: !Ref AllowedMyIP
+
+  # 4. RDS Instance
+  MyRDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: my-custom-vpc-rds
+      AllocatedStorage: '20'
+      DBInstanceClass: !Ref DBInstanceClass
+      Engine: mysql
+      EngineVersion: '8.0'
+      MasterUsername: !Join ['', ['{{resolve:secretsmanager:', !Ref MyRDSSecret, ':SecretString:username}}']]
+      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref MyRDSSecret, ':SecretString:password}}']]
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref MyDBSecurityGroup
+      PubliclyAccessible: !Ref DBPublicAccess
+      StorageEncrypted: true
+      DeletionProtection: false
+      DeleteAutomatedBackups: true
+
+Outputs:
+  RDSEndpoint:
+    Description: "RDS Endpoint Address"
+    Value: !GetAtt MyRDSInstance.Endpoint.Address
+
+  SecretARN:
+    Description: "Secrets Manager ARN"
+    Value: !Ref MyRDSSecret
