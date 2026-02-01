@@ -11,7 +11,7 @@ RDS構築時のセキュリティ設計（PubliclyAccessible、IP制限など）
 
 ## 構成 / アーキテクチャ
 
-
+images/architecture.png
 
 ## 検証時の構成
 ※ 本テンプレートは学習目的のため、  
