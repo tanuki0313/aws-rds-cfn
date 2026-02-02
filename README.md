@@ -30,6 +30,32 @@ RDSはMulti-AZ構成としており、障害発生時には自動的に
 
 ## 使用技術
 
+### AWS
+- Amazon VPC  
+  - 既存VPCを利用
+  - Public / Private Subnet を想定した設計
+- Amazon RDS (MySQL)
+  - MySQL 8.0
+  - Multi-AZ 構成（フェイルオーバー対応）
+  - DB Subnet Group を利用した AZ 分散
+- Amazon EC2（※本テンプレートでは未作成）
+  - 本番想定の接続元として設計図に記載
+- AWS Secrets Manager
+  - RDS のマスターユーザー名 / パスワードを管理
+- AWS CloudFormation
+  - インフラをコードとして管理（IaC）
+
+### ネットワーク
+- Security Group
+  - RDS への接続元 IP を制限
+- CIDR / IP 制御
+  - 検証時は特定 IP からのみ接続可能な設定
+
+### 設計・その他
+- draw.io
+  - 構成図（アーキテクチャ図）の作成
+- GitHub
+  - テンプレートおよび README の管理
 
 ## CloudFormation構成の説明
 
