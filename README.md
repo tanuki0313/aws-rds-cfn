@@ -47,9 +47,7 @@ RDSはMulti-AZ構成としており、障害発生時には自動的に
 
 ### ネットワーク
 - Security Group
-  - RDS への接続元 IP を制限
-- CIDR / IP 制御
-  - 検証時は特定 IP からのみ接続可能な設定
+  - RDS への接続元 IP を制限（検証時は特定 IP のみ許可）
 
 ### 設計・その他
 - draw.io
@@ -59,8 +57,19 @@ RDSはMulti-AZ構成としており、障害発生時には自動的に
 
 ## CloudFormation構成の説明
 
-## セキュリティ設計について
+本テンプレートでは、CloudFormation を用いて
+RDS（MySQL）の構築を自動化しています。
 
+DB の認証情報は Secrets Manager により管理し、
+テンプレート内に平文で記載しない構成としています。
+
+また、DB Subnet Group に複数 AZ のサブネットを指定し、
+`MultiAZ: true` を設定することで
+高可用性を考慮した RDS 構成を実現しています。
+
+接続制御は Security Group により行い、
+検証時と本番運用時で切り替え可能なよう
+接続元 IP は Parameters として定義しています。
 
 ## 工夫・学習したポイント
 
