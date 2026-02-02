@@ -57,19 +57,14 @@ RDSはMulti-AZ構成としており、障害発生時には自動的に
 
 ## CloudFormation構成の説明
 
-本テンプレートでは、CloudFormation を用いて
-RDS（MySQL）の構築を自動化しています。
+本テンプレートでは、CloudFormation を用いて RDS（MySQL）の構築を自動化しています。
 
-DB の認証情報は Secrets Manager により管理し、
-テンプレート内に平文で記載しない構成としています。
+DB の認証情報は AWS Secrets Manager により管理し、テンプレート内に認証情報を平文で記載しない構成としています。
 
-また、DB Subnet Group に複数 AZ のサブネットを指定し、
-`MultiAZ: true` を設定することで
-高可用性を考慮した RDS 構成を実現しています。
+また、DB Subnet Group に複数 AZ のサブネットを指定し、MultiAZ: true を設定することで、高可用性を考慮した RDS 構成を実現しています。
 
-接続制御は Security Group により行い、
-検証時と本番運用時で切り替え可能なよう
-接続元 IP は Parameters として定義しています。
+接続制御は Security Group により行い、検証時と本番運用時で切り替え可能なよう、接続元 IP や Public アクセスの可否を Parameters として定義しています。
+これにより、検証用途と本番用途でテンプレートを使い分けることなく、パラメータ変更のみで柔軟に構成を切り替え可能な設計としています
 
 ## 工夫・学習したポイント
 
