@@ -68,6 +68,22 @@ DB の認証情報は AWS Secrets Manager により管理し、テンプレー�
 
 ## 工夫・学習したポイント
 
+・Parameters を活用することで、異なる環境でも再利用可能な CloudFormation テンプレート設計を意識しました。
+
+・接続元 IP、PubliclyAccessible、DBInstanceClass を Parameters 化し、  
+  検証用途と本番用途でテンプレートを分けることなく、パラメータ変更のみで構成を切り替え可能な設計としました。
+
+・Multi-AZ を有効化し、障害発生時にスタンバイインスタンスへ自動フェイルオーバーされる高可用性構成を実装しました。
+
+・DB の認証情報は AWS Secrets Manager で管理し、CloudFormation テンプレート内にパスワードを平文で記載しないことで、セキュリティを考慮した設計としました。
+
+・既存 VPC を利用し、サブネットや Internet Gateway との関係を意識して構築することで、AWS ネットワーク構成への理解を深めました。
+
+・PubliclyAccessible の挙動や Public / Private Subnet の役割を整理することで、本番環境を想定したネットワークおよびセキュリティ設計の考え方を学習しました。
+
+・Outputs を定義し、作成した RDS のエンドポイントや Secret ARN を即座に参照できるようにし、運用や他サービス連携を考慮した設計としました。
+
+・DeletionProtection や DeleteAutomatedBackups を明示的に設定し、環境削除時の挙動を制御できるようにしました。
 
 ## 開発中に直面した課題と解決策
 
