@@ -2,11 +2,9 @@
 CloudFormationを用いた既存VPCへのRDS（MySQL）自動構築テンプレート
 
 ## 概要（何を作ったか・目的）
-CloudFormationを用いて、既存のVPCおよびサブネット上に
-RDS（QL）を自動構築するテンプレートを作成しました。
+CloudFormation を用いて、既存の VPC およびサブネット上に RDS（MySQL）を自動構築するテンプレートを作成しました。
 
-IaC（Infrastructure as Code）の基礎理解に加え、
-RDS 構築時におけるネットワーク設計およびセキュリティ設計
+IaC（Infrastructure as Code）の基礎理解に加え、RDS 構築時におけるネットワーク設計およびセキュリティ設計
 （PubliclyAccessible、Security Group、IP 制御など）の理解を目的としています。
 
 ## 構成 / アーキテクチャ
