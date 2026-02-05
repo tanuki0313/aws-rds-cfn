@@ -3,11 +3,11 @@ CloudFormationを用いた既存VPCへのRDS（MySQL）自動構築テンプレ�
 
 ## 概要（何を作ったか・目的）
 CloudFormationを用いて、既存のVPCおよびサブネット上に
-RDS（MySQL）を自動構築するテンプレートを作成しました。
+RDS（QL）を自動構築するテンプレートを作成しました。
 
-IaC（Infrastructure as Code）の基礎理解と、
-RDS構築時のセキュリティ設計（PubliclyAccessible、IP制限など）を
-学習することを目的としています。
+IaC（Infrastructure as Code）の基礎理解に加え、  
+RDS 構築時におけるネットワーク設計およびセキュリティ設計
+（PubliclyAccessible、Security Group、IP 制御など）の理解を目的としています。
 
 ## 構成 / アーキテクチャ
 
@@ -39,7 +39,7 @@ RDSはMulti-AZ構成としており、障害発生時には自動的に
   - Multi-AZ 構成（フェイルオーバー対応）
   - DB Subnet Group を利用した AZ 分散
 - Amazon EC2（※本テンプレートでは未作成）
-  - 本番想定の接続元として設計図に記載
+  - 本番想定のアプリケーションサーバー／接続元として設計
 - AWS Secrets Manager
   - RDS のマスターユーザー名 / パスワードを管理
 - AWS CloudFormation
